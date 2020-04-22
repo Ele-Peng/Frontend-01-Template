@@ -35,7 +35,7 @@ function UTF8_Encoding(str) {
 
 ```javascript
 function UTF8_Decoding(bytes) {
-    var str = "",
+    let str = "",
         bytesIndex = -1,
         bytesEnd = bytes.length - 1;
 
@@ -48,7 +48,7 @@ function UTF8_Decoding(bytes) {
 ```
 
 #### 测试截图
-- ![测试截图](http://p0.meituan.net/myvideodistribute/1adbcd8a4c10e2fd308373e0050eafce62354.png)
+- ![测试截图](http://p0.meituan.net/myvideodistribute/c1770110908275e40343791324f7dfff154914.png)
 
 
 ## 类型化数组
@@ -58,7 +58,7 @@ function UTF8_Decoding(bytes) {
 - **类型化数组**
 	- **TypedArray** 视图支持的数据类型一共有 9 种（ **DataView** 视图支持除 **Uint8C** 以外的其他 8 种）。
 
-		| 数据类型 | 字节长度 | 含义 | 对应的 C 语言类型 |
+		| 数据类型 |  字节长度  |  含义  | 对应的 C 语言类型 |
 		| --- | --- | --- | --- |
 		| Int8 | 1 | 8 位带符号整数 | signed char |
 		| Uint8 |	1 |	8 位不带符号整数 |	unsigned char |
@@ -121,7 +121,6 @@ function UTF8_Decoding(bytes) {
 ```
 
 - 二进制数转成 IEEE 754 标准
-
 
 	- ![IEEE 754 标准](http://p0.meituan.net/myvideodistribute/eefbaacb81e66deb742370e27d9e3bb876872.png)
 
