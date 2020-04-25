@@ -442,8 +442,9 @@ function convertStringToNumber(str, radix) {
 
 ## 待解决问题
 - 是的 😭 它的浮点数的舍入，我没有想到好的方法，哭唧唧
-- 代码地址
+- [代码地址](https://github.com/Ele-Peng/Frontend-01-Template/blob/master/week03/convertStringToNumber.html)
 
 
 ## 写在后面
+- 欢迎大家来告诉我的遗留问题该怎么解决，以及你们在参考我的实现时，有测试用例过不去的地方，也可以提 issue 告诉我，我优化代码。
 - 祝大家多多发财
