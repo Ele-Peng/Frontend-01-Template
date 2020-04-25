@@ -1,0 +1,245 @@
+<script>
+  /*
+  * @params: { str } 输入需要转换的字符串, { radix } 转换的指定基数
+  * return: number
+  */
+  function convertStringToNumber(str, radix) {
+    const noWhiteSpaceStr = replaceWhiteSpaceInStr(str) /** 将 str 中的 whitespace 进行匹配 */
+    const checkedRadixStr = formatStrByRadix(str, radix) /** 将 str 根据指定基数进行转换 */
+    if (!checkedRadixStr) return NaN
+    let resNum = 0
+    switch (radix) {
+      case 10:
+        resNum = converStringToDeciaml(str) /** 将 str 转成十进制 */
+        break;
+      case 2:
+        resNum = converStringToBinaryInteger(str, radix) /** 将 str 转成二进制*/
+        break;
+      case 8:
+        resNum = converStringToOctalInteger(str, radix) /** 将 str 转成八进制*/
+        break;
+      case 16:
+        resNum = converStringToHexInteger(str, radix) /** 将 str 转成十六进制*/
+        break;
+      default:
+        return NaN
+    }
+    return resNum
+  }
+
+  /*
+  * @params: { str } 输入需要替换的字符串
+  * return: resStr 无 whitespace 字符串
+  */
+  function replaceWhiteSpaceInStr(str) {
+    let resStr = str.replace(/\s*/g, '') // 去除空格
+    // resStr = resStr.replace(/^[\u000A|\u000D|\u2028|\u2029]/g, '') // 去除 LineTerminator unicode输入方式
+    resStr = resStr.replace(/[\r|\n]/g, '') // 去除换行
+    // console.log(resStr)
+    return resStr
+  }
+  // replaceWhiteSpaceInStr('     123456   ')
+  // replaceWhiteSpaceInStr('   \u2028  123456   ')
+  // replaceWhiteSpaceInStr('   \u2028  1 23   4 56 78 \u000A  ')
+  // replaceWhiteSpaceInStr('   \u2028  1 23   4 56 78 \u000A \u000D \u2029  ')
+
+  /*
+  * @params: { str } 输入需要替换的字符串, { radix } 转换的指定基数
+  * return: resStr 根据指定基数转换过得字符串
+  */
+  function formatStrByRadix(str, radix) {
+    let resStr = ''
+    let testReg = null
+    switch (radix) {
+      case 10:
+        testReg = /^((0)|([1-9][0-9]*))?.?([0-9]*)((e|E)?(\+|\-)?([0-9]*))?/
+        break;
+      case 2:
+        // 根据 ECMA-262 是 /^0(b|B)(0|1)+$/
+        // 但是我在 Chrome 浏览器上测了，二进制没有 'b' or 'B'
+        testReg = /^(0|1)+/
+        break;
+      case 8:
+        // 根据 ECMA-262 是 /^0(O|o)[0-7]+$/
+        // 但是我在 Chrome 浏览器上测了，二进制没有 'o' or 'O'
+        testReg = /^[0-7]+/
+        break;
+      case 16:
+        // 根据 ECMA-262 是 /^0(x|X)([0-9a-fA-F])+/
+        // 但是我在 Chrome 浏览器自测中发现，没有表示符 'x' or 'X'也可
+        testReg = /^0(x|X)?([0-9a-fA-F])+/
+        break;
+      default:
+        return false
+    }
+    return testReg.exec(str) ? testReg.exec(str)['0'] : false
+  }
+
+  // 将 str 转成二进制
+  function converStringToBinaryInteger(str, radix) {
+    return strMultipleRadix(str, radix)
+  }
+
+  // 将str转成八进制
+  function converStringToOctalInteger(str, radix) {
+    return strMultipleRadix(str, radix)
+  }
+
+  // 将str转成十六进制
+  function converStringToHexInteger(str, radix) {
+    return strMultipleRadix(str, radix)
+  }
+
+  /*
+  * @params: { str } 输入需要替换的字符串, { radix } 转换的指定基数
+  * return: resStr 乘以指定基数转换过得字符串
+  */
+  function strMultipleRadix(str, radix) {
+    let tempStrArr = str.split('')
+    let res = 0
+    for (let i = tempStrArr.length - 1; i > 0; i--) {
+      if (radix === 16) {
+        if ((tempStrArr[i].codePointAt(0) - '0'.codePointAt(0) >= 0) && (tempStrArr[i].codePointAt(0) - '0'.codePointAt(0) < 10)) {
+          res += (tempStrArr[i].codePointAt(0) - '0'.codePointAt(0)) * Math.pow(radix, tempStrArr.length - i - 1)
+        } else if ((tempStrArr[i].codePointAt(0) - 'a'.codePointAt(0) >= 0) && (tempStrArr[i].codePointAt(0) - 'a'.codePointAt(0) < 6)) {
+          res += (tempStrArr[i].codePointAt(0) - 'a'.codePointAt(0) + 10) * Math.pow(radix, tempStrArr.length - i - 1)
+        } else if ((tempStrArr[i].codePointAt(0) - 'A'.codePointAt(0) >= 0) && (tempStrArr[i].codePointAt(0) - 'A'.codePointAt(0) < 6)) {
+          res += (tempStrArr[i].codePointAt(0) - 'A'.codePointAt(0) + 10) * Math.pow(radix, tempStrArr.length - i - 1)
+        }
+      } else {
+        res += (tempStrArr[i].codePointAt(0) - '0'.codePointAt(0)) * Math.pow(radix, tempStrArr.length - i - 1)
+      }
+    }
+    return res
+  }
+
+  function converStringToDeciaml(str) {
+    // console.log('需要进行十进制转换的字符串-=-=--=-==-=', str)
+    const sign = getSign(str)
+    const strFormatBySign = formatStrBySign(str)
+    if (isInfinity(strFormatBySign)) return (1 / 0) * sign
+    const numberObject = splitStr(strFormatBySign)
+    const {int, float, exponentSign, exponent} = numberObject
+    const resInt = calculateInt(int) // 计算整数部分
+    // console.log('resInt 整数部分', resInt)
+    const resFloat = calculateFloat(float) // 计算小数部分
+    // console.log('resFloat 小数部分', resFloat)
+    const resExponent = calculateExponent(resInt, resFloat, exponentSign, exponent) // 计算（整数+小数）*  指数部分
+    // console.log('resExponent 未带符号指数部分', resExponent)
+    const res = sign * resExponent // 最后乘以符号位
+    return res
+  }
+
+  // 获取符号位
+  function getSign(str) {
+    // 如果S的首字符为'-'
+    if(str.indexOf('-') == 0) { 
+      return -1
+    }
+    return 1
+  }
+
+  // 根据符号位格式化字符串
+  function formatStrBySign(str) {
+    // 如果 str 的首字符为‘+’或'-'，则移除首字符
+    if (str.indexOf('-') == 0 || str.indexOf('+') == 0) {
+      str = str.substring(1, str.length)
+    }
+    return str
+  }
+
+  // 是否为 Infinity
+  function isInfinity(str) {
+    const testReg = /^Infinity/
+    let resReg = testReg.exec(str)
+    return resReg && resReg[0]
+  }
+
+  // 切割字符串
+  /*
+  * @params: { str } 输入需要切割的字符串
+  * return: res: Object {
+  *   int: 整数位,
+  *   float: 小数位,
+  *   exponentSign: 指数位符号,
+  *   exponent: 指数位
+  * }
+  */
+  function splitStr(str) {
+    const testReg = /^((0)|([1-9][0-9]*))?.?([0-9]*)(e|E)?((\+|\-)?([0-9]*))?/
+    let resReg = testReg.exec(str)
+    let res = {
+      int: resReg['1'] || 0,
+      float: resReg['4'] || 0,
+      exponentSign: resReg['7'] || '+',
+      exponent: resReg['8'] || 0
+    }
+    return res
+  }
+
+  // 整数部分运算
+  function calculateInt(str) {
+    let res = 0
+    const radix = 10
+    for (let i = str.length - 1; i >= 0; i--) {
+      res += (str[i].codePointAt(0) - '0'.codePointAt(0)) * Math.pow(radix, str.length - i - 1)
+    }
+    return res
+  }
+  // 小数部分运算
+  function calculateFloat(str) {
+    let res = 0
+    const radix = 10
+    for (let i = 0; i < str.length; i++) {
+      res += (str[i].codePointAt(0) - '0'.codePointAt(0)) * Math.pow(radix, i * -1)
+    }
+    return res
+  }
+  // 指数部分运算
+  function calculateExponent(int, float, exponentSign, exponent) {
+    // if (float)
+    let str = int + 0.1 * float
+    const radix = 10
+    const exponentInt = calculateInt(exponent)
+    if (exponentSign === '+') {
+      str = str * Math.pow(radix, exponentInt)
+    } else {
+      str = str * Math.pow(radix, exponentInt * -1)
+    }
+    // console.log('Math.abs(str)', Math.abs(str) -  Math.floor(str))
+    // // console.log('Number.EPSILON', Number.EPSILON)
+    // if (Math.abs(str) -  Math.floor(str)) {
+    //   return str.toFixed(1)
+    // }
+    return str
+  }
+
+  // console.log(converStringToDeciaml('1.0e+10'))
+  // console.log('parseFloat 结果', parseFloat('1.0e+10', 10))
+  // console.log(converStringToDeciaml('-1.0e+10'))
+  // console.log('parseFloat 结果', parseFloat('-1.0e+10', 10))
+  // console.log(converStringToDeciaml('1.012e+10'))
+  // console.log('parseFloat 结果', parseFloat('1.012e+10', 10))
+  // console.log(converStringToDeciaml('-1.012e+10'))
+  // console.log('parseFloat 结果', parseFloat('-1.012e+10', 10))
+  // console.log(converStringToDeciaml('.012e+10'))
+  // console.log('parseFloat 结果', parseFloat('.012e+10', 10))
+  // console.log(converStringToDeciaml('-.012e+10'))
+  // console.log('parseFloat 结果', parseFloat('-.012e+10', 10))
+  // console.log(converStringToDeciaml('0.12e+10'))
+  // console.log('parseFloat 结果', parseFloat('0.12e+10', 10))
+  // console.log(converStringToDeciaml('-0.12e+10'))
+  // console.log('parseFloat 结果', parseFloat('-0.12e+10', 10))
+  // console.log(converStringToDeciaml('1.2e-10'))
+  // console.log('parseFloat 结果', parseFloat('1.2e-10', 10))
+  // console.log(converStringToDeciaml('-1.2e-10'))
+  // console.log('parseFloat 结果', parseFloat('-1.2e-10', 10))
+  // console.log(converStringToDeciaml('-1.22'))
+  // console.log('parseFloat 结果', parseFloat('-1.22', 10))
+  // console.log(converStringToDeciaml('Infinity'))
+  // console.log('parseFloat 结果', parseFloat('Infinity', 10))
+  // console.log(converStringToDeciaml('Infinity2222'))
+  // console.log('parseFloat 结果', parseFloat('Infinity2222', 10))
+  // console.log(converStringToDeciaml('22Infinity2222'))
+  // console.log('parseFloat 结果', parseFloat('22Infinity2222', 10))
+</script>
