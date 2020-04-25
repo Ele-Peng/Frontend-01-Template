@@ -1,0 +1,63 @@
+<script>
+  function convertNumberToString(num) {
+    try {
+      const formatNum = Number(num)
+      if (isNaN(formatNum)) return 'NaN'
+      if (isZero(formatNum)) return '0'
+      const sign = getSign(formatNum)
+      if (!isFinite(formatNum)) return sign + 'Infinity'
+      return convertDecimalNumberToString(formatNum)
+    } catch (err) {
+      throw new Error(err)
+    }
+  }
+
+  function isZero(num) {
+    if (1 / num === Infinity || 1 / num === -Infinity) {
+      return true
+    }
+    return false
+  }
+
+  function getSign(num) {
+    if (num === -Infinity) {
+      return "-"
+    } else if (num === Infinity) {
+      return ""
+    } // 特殊情况 0 前面已经处理
+    return num / Math.abs(num) === 1 ? "" : "-"
+  }
+
+
+  function convertDecimalNumberToString(num) {
+    const radix = 10
+    let int = Math.floor(num)
+    let float = (num - int) * 100 / 100
+    let resInt = ''
+    let resFloat = ''
+    // 整数部分 除以基数，取余
+    while (int > 0) {
+      resInt = String(int % radix) + resInt
+      int = Math.floor(int / radix)
+    }
+    if (float) {
+      resFloat = '.'
+      // 小数部分，乘以基数 取整
+      while (float > 0) {
+        resFloat = resFloat + Math.floor(float * radix)
+        float -= Math.floor(float * radix)
+      }
+    }
+    return resInt + resFloat
+  }
+
+  console.log(convertNumberToString(-Infinity))
+  console.log('toString', -Infinity.toString())
+  console.log(convertNumberToString(+Infinity))
+  console.log('toString', +Infinity.toString())
+  console.log(convertNumberToString(120.11112))
+  console.log('toString', 120.11112.toString())
+  console.log(convertNumberToString(120))
+  console.log('toString', (120).toString())
+
+</script>
