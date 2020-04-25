@@ -1,6 +1,8 @@
 
 ## 写在前面
-- 简单记录一下，Javascript parseInt 内部实现，并实现 convertStringToNumber
+- 简单记录一下，Javascript parseInt+parseFloat 内部实现，并实现 convertStringToNumber
+
+<!-- more -->
 
 ## 实践准备
 - 首先我们需要简单梳理一下我们的实现过程，再根据 [ECMAScript-262](https://www.ecma-international.org/publications/standards/Ecma-262.htm) 标准完善实现
@@ -79,6 +81,7 @@ function convertStringToNumber(str, radix) {
 	- 单元测试
 		- ![单元测试截图](http://p0.meituan.net/myvideodistribute/a70fa86dd4d8261537f8cbf5c0e5bc2c71147.png)
 - 将 str 根据指定基数进行转换
+	- [正则表达式匹配 Number 字面量](https://ele-peng.github.io/2020/04/20/Reg-Number/)
 	
 	```javascript
 	/*
@@ -254,8 +257,8 @@ function convertStringToNumber(str, radix) {
 	3. 判断是否为 整数
 		1. 整数
 			1. 是否为科学计数法表示
-				- 是，通过指数位置分成两部分：整数部分+指数部分
-				- 否，只需处理整数部分
+				1. 是，通过指数位置分成两部分：整数部分+指数部分
+				2. 否，只需处理整数部分
 		2. 小数
 			1. 是否为科学计数法表示
 				1. 是，通过分割成小数点到指数，分成三部分：整数部分+小数部分+指数部分

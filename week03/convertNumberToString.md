@@ -1,5 +1,4 @@
 
-
 ## 写在前面
 - 是的我要折腾一下 Javascript convertNumberToString 了🙆
 - [convertStringToNumber 实现](https://ele-peng.github.io/2020/04/24/convertStringToNumber/)
@@ -12,8 +11,8 @@
 	- ![input-num 的特殊处理](http://p1.meituan.net/myvideodistribute/e0405830e24314df04f89a21078cc64198443.png)
 - 简单算法处理
 	- 获取符号位
-		- - 负 显示
-		- + 正 不显示
+		- \- 负 显示
+		- \+ 正 不显示
 	- 十进制
 	- 二进制
 	- 八进制
