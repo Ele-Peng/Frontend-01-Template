@@ -371,6 +371,29 @@ client.on('end', () => {
 	- ![client](http://p0.meituan.net/myvideodistribute/50256a14d9171b06c374dc7e6894efcf61275.png)
 	- ![server](http://p0.meituan.net/myvideodistribute/23ed78fb0b5598952897249eb5ae2fbb29575.png)
 
+## 错误修改
+- ![错误修改](http://p0.meituan.net/myvideodistribute/fd4b58c42c99e0f2754c025b6682307650941.png)
+- server 端长度计算不是十进制，是十六进制
+
+  ```javascript
+  
+      // 字符流处理
+      receiveChar(char) {
+	    if (this.current === this.WAITING_LENGTH) {
+	      if (char === '\r') {
+	        if (this.length === 0) {
+	          this.current = this.FINISHED_NEW_LINE
+	        } else {
+	          this.current = this.WAITING_LENGTH_LINE_END
+	        }
+	      } else {
+	        this.length *= 16
+	        this.length += parseInt(char, 16)
+	      }
+	    }
+	    ...
+      }
+  ```
 	
 ## 参考文献
 - [Node.js v12.16.3 Documentation](https://nodejs.org/dist/latest-v12.x/docs/api/http.html)
