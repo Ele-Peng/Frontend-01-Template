@@ -323,7 +323,7 @@ while(input) {
 		- [0, 1, 2, 3, 4, 5, 6, 7, 8] 字符串数组下标索引
 		- [A, B, A, B, C, A, B, A, A] 字符串数组
 		- [0, 0, 1, 2, 0, 1, 2, 3, ?] prefixTable
-			- 我们可以发现，前一个字符 A 对应的 prefix 为 3（len - 1 === 3），对应的pattern[3]为 B（prefix[len - 1] === B），B的前一个字符 A 对应的 prefix 为 1（len = prefix[len - 1] --> 0），pattern[1] 为 A，再执行上层代码 prefix[8] === len[0]
+			- 我们可以发现，前一个字符 A 对应的 prefix 为 3，对应的pattern[3]为 B（prefix[len - 1] === B），B的前一个字符 A 对应的 prefix 为 1（len = prefix[len - 1] --> 0），pattern[1] 为 A，再执行上层代码 prefix[8] === len[0]
 	
 	
 - KMP 最长公共前后缀长度实现
