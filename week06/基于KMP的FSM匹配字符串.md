@@ -567,6 +567,11 @@ while(input) {
 - 运行结果
 	- ![基于 KMP 的 FSM 处理 pattern 运行结果](http://p0.meituan.net/myvideodistribute/7079d40d337c97ae742c21e0f7a2f87320359.png)
 
+	
+## 参考
+- [KMP 算法视频讲解](https://www.bilibili.com/video/BV1Px411z7Yo)
+- [KMP-最长公共前后缀长度](http://www.ruanyifeng.com/blog/2013/05/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm.html)
+
 
 
 ## 写在后面
