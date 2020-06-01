@@ -49,15 +49,18 @@
 - .cls
 - \#id
 - [attr=value]
-	- 【未完】编写测试用例
 	- [attr]
 		- 直接在方括号中放入属性名，是检查元素是否具有这个属性，只要元素有这个属性，不论属性是什么值，都可以被选中
+		- ![[attr]](http://p0.meituan.net/myvideodistribute/ee7f5620eec48d0a237b15ed61a83404257138.png)
 	- [attr=val]
 		- 精确匹配，检查一个元素属性的值是否是 val
+		- ![[attr=val]](http://p0.meituan.net/myvideodistribute/1adfecc2daa770b4192909740af66b1d259781.png)
 	- [att~=val]
 		- 多种匹配，检查一个元素的值是否是若干值之一，这里的 val 不是一个单一的值了，可以是用空格分隔的一个序列
+		- ![[att~=val]](http://p0.meituan.net/myvideodistribute/b61188491bb578e4f96ef97baa6b263c264908.png)
 	- [att|=val]
-		- 开头匹配，检查一个元素的值是否是以 val 开头，它跟精确匹配的区别是属性只要以 val 开头即可，后面内容不管
+		- 开头匹配，检查一个元素的值是否是以 val 开头，它跟精确匹配的区别是属性只要以 val 开头即可，后面内容不管（红圈圈出的是生效样式）
+		- ![[att|=val]](http://p0.meituan.net/myvideodistribute/4f1459c9d673adf7ac337f06569ec688330483.png)
 - :hover
 - ::before
 
@@ -188,16 +191,15 @@
      
 	
 	  if (resClass) {
-	    let resClassArr = []
-	    for (let i = 0; i < resClass.length; i ++) {
-	      let tempArr = resClass[i].split('.')
-	      for (let j = 1; j < tempArr.length; j ++) {
+	    let resClassArr = [] // style class selector数组
+	    for (let i = 0; i < resClass.length; i ++) { // 处理 .cls1#id.cls2 匹配出来 [".cls1", ".cls2"] 情况
+	      let tempArr = resClass[i].split('.')	      for (let j = 1; j < tempArr.length; j ++) { // 索引从1开始，因为 ["", "cls1", "cls2"]
 	        resClassArr.push(tempArr[j])
 	      }
 	    }
 	    let classAttr = element.attributes.filter(attr => attr.name === "class")
 	    let classAttrRes = []
-	    // classAttr:  [ { name: 'class', value: 'c2 c3' } ]
+	    // 元素 attr class 数组，classAttr:  [ { name: 'class', value: 'c2 c3' } ]
 	    if (classAttr && classAttr[0]) {
 	      classAttrRes = classAttr[0]["value"].split(" ")
 	    }
@@ -206,12 +208,12 @@
 	      tempFlag = false
 	      let k = 0
 	      for (; k < classAttrRes.length; k ++) {
-	        if (classAttrRes[k] === resClassArr[i]) {
+	        if (classAttrRes[k] === resClassArr[i]) { // 拿 style class selector 与 element class attribute 进行比较
 	          tempFlag = true
 	          break
 	        }
 	      }
-	      if (!tempFlag && k === classAttrRes.length) {
+	      if (!tempFlag && k === classAttrRes.length) { // 如果没有匹配到，并且匹配到最后一位
 	        return false;
 	      }
 	    }
@@ -227,7 +229,6 @@
 - 最后我们别忘了修改 specificity 的计算逻辑
 
 	```javascript
-
 	function specificity(selector) {
 	  const p = [0, 0, 0, 0]
 	  const selectorParts = selector.split(" ")
@@ -242,6 +243,7 @@
 	    }
 	  }
 	  for (let part of selectorParts) {
+	
 	    let regId = /(#\w+)+/g
 	    let resId = part.match(regId)
 	    if (resId && resId[0].charAt(0) == "#") {
@@ -250,6 +252,8 @@
 	      p[3] += 1
 	    }
 	  }
+	  console.log('selector', selector)
+	  console.log('p', p)
 	  return p
 	}
 	```
@@ -294,6 +298,48 @@
     	- ![运行截图](http://p0.meituan.net/myvideodistribute/4d585e3777f3371a9fd976dce2698bc6163838.png)
     - css specificity 计算截图
     	- ![css specificity 计算截图](http://p1.meituan.net/myvideodistribute/8566a8d6a4fcb229b6a1005946fd686647911.png)
+
+    	
+- 测试用例二
+	
+	```javascript
+	<html maaa=a >
+		<head>
+		  <style>
+			#container{
+			  width:500px;
+			  height:300px;
+			  display:flex;
+			  background-color:rgb(255,255,255);
+			}
+			#container #myid{
+				width:200px;
+				height:100px;
+				background-color:rgb(255,0,0)
+			}
+			#container .c1{
+				flex:1;
+				background-color:rgb(0,255,0)
+			}
+			#container.wrapper .c3.c2{
+				width:200px;
+				height:100px;
+				background-color:rgb(0,0,255)
+			}
+		</style>
+		</head>
+		<body>
+		  <div id="container" class="wrapper">
+		    <div id="myid" class="c2 c3"></div>
+		    <div class="c1"></div>
+		  </div>
+		</body>
+    </html>
+	```
+	- 运行截图
+		- ![运行截图](http://p0.meituan.net/myvideodistribute/c73ede6bb822726ff171e2b7dbaa5fdb156331.png)
+	- css specificity 计算截图
+		- ![css specificity 计算截图](http://p0.meituan.net/myvideodistribute/af1f074f1e418a539ce900efdfa3498a44257.png)
 
 
 
