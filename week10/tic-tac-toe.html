@@ -73,7 +73,7 @@
   // 机器
   function computerMove() {
     let choice = bestChoice(pattern, color);
-    if (choice.point) {
+    if (choice.point && choice.point.length) {
       pattern[choice.point[1]][choice.point[0]] = color;
     }
     if (check(pattern, color)) {
