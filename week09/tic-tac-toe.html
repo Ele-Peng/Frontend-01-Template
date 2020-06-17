@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="board"></div>
+</body>
+<script>
+  let pattern = [
+    [2, 0, 0],
+    [0, 1, 0],
+    [0, 0, 0]
+  ]
+
+  // 绘制面板
+  function show() {
+    let board = document.getElementById('board');
+    board.innerHTML = '';
+    let tempFragment = document.createDocumentFragment();
+    for(let i = 0; i < 3; i++) {
+      for(let j = 0; j < 3; j++) {
+        let cell = document.createElement('div');
+        cell.classList.add('cell');
+        cell.innerHTML = 
+          pattern[i][j] === 2 ? '❌' :
+          pattern[i][j] === 1 ? '⭕️' :
+          '';
+        cell.addEventListener('click', () => userMove(i, j));
+        tempFragment.appendChild(cell);
+      }
+      tempFragment.appendChild(document.createElement('br'));
+    }
+    board.appendChild(tempFragment);
+  }
+</script>
+</html>
