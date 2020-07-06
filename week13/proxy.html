@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <input id="r" type="range" min="0" max="255" />
+  <input id="g" type="range" min="0" max="255" />
+  <input id="b" type="range" min="0" max="255" />
+  <div id="color" style="width: 100px; height: 100px;background-color: rgb(255, 255, 255);"> </div>
+</body>
+<script>
+  let handlers = new Map(); // callback
+  let reactivities = new Map();
+
+  let usedReactivities = [];
+
+  let object = {
+    a: 1,
+    b: 2
+  }
+
+  function reactive(obj) {
+    if (reactivities.has(obj)) {
+      return reactivities.get(obj)
+    }
+    let proxy = new Proxy(obj, {
+      get(obj, prop) {
+        usedReactivities.push([obj, prop])
+        if (typeof obj[prop] === "object")
+          return reactive(obj[prop]);
+        return obj[prop]
+      },
+      set(obj, prop, val) {
+        obj[prop] = val
+        // console.log(handlers)
+        if (handlers.get(obj)) {
+          if (handlers.get(obj).get(prop)) {
+            for (let handler of handlers.get(obj).get(prop)) {
+              handler()
+            }
+          }
+        }
+        return obj[prop]
+      }
+    })
+
+    reactivities.set(obj, proxy)
+    reactivities.set(proxy, proxy)
+
+    return proxy
+  }
+
+  // 依赖收集
+  // 先监听 再收集
+  function effect(handler) {
+    usedReactivities = []
+    handler()
+    // console.log(usedReactivities)
+    for(let usedReactivity of usedReactivities) {
+      let [obj, prop] = usedReactivity
+      // console.log([obj, prop])
+      if (!handlers.has(obj)) {
+        handlers.set(obj, new Map())
+      }
+      if (!handlers.get(obj).has(prop)) {
+        handlers.get(obj).set(prop, [])
+      }
+      handlers.get(obj).get(prop).push(handler)
+    }
+  }
+
+
+
+  // let dummy;
+  // let proxy = reactive({a: 1})
+  // console.log(() => dummy = proxy.a)
+  // console.log(dummy)
+  // proxy.a = 2
+  // console.log(dummy)
+
+
+  // let v12;
+  // let p1 = reactive({a: 1});
+  // let p2 = reactive({a: 2});
+
+  // effect(() => v12 = p1.a + p2.a)
+  // effect(() => v1 = p1.a)
+  // effect(() => v2 = p2.a)
+
+
+  // let v;
+  // let p = reactive(object)
+  // effect(() => v = p.a.x)
+  // console.log(v)
+
+  // p.a = {x: 4};
+  // console.log(v)
+
+
+
+  let p = reactive({ r: 100, g: 100, b: 100 })
+
+  effect(() => {
+    document.getElementById("r").value = p.r
+  })
+
+  effect(() => {
+    document.getElementById("g").value = p.g
+  })
+
+  effect(() => {
+    document.getElementById("b").value = p.b
+  })
+
+  document.getElementById("r").addEventListener("input", event => {
+    p.r = event.target.value
+  })
+
+
+  document.getElementById("g").addEventListener("input", event => {
+    p.g = event.target.value
+  })
+  
+
+
+  document.getElementById("b").addEventListener("input", event => {
+    p.b = event.target.value
+  })
+  
+
+
+  effect(() => {
+    document.getElementById("color").style.backgroundColor = `rgb(${p.r}, ${p.g}, ${p.b})`
+  })
+
+
+
+
+
+  // let proxy = new Proxy(obj, {
+  //   get (obj, prop) {
+  //     console.log('obj', obj)
+  //     console.log('prop', prop)
+  //     return obj[prop]
+  //   }
+
+  //   defineProperty(obj, prop, desc) {
+  //     console.log(arguments)
+  //     return Object.defineProperty(obj, prop. desc)
+  //   }
+  
+  // })
+</script>
+</html>

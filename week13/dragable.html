@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="container">
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+  </div>
+  <div id="dragable" style="width: 100px;height: 100px;background-color: pink;display: inline-block;"></div>
+</body>
+<script>
+  let dragable = document.getElementById("dragable");
+
+  let baseX = 0, baseY = 0;
+
+  dragable.addEventListener("mousedown", (event) => {
+
+    let startX = event.clientX, startY = event.clientY;
+
+    let move = (event) => {
+      // 
+      // let x = baseX + event.clientX - startX, y = baseY + event.clientY - startY;
+      // // top, left 涉及layout，影响布局，性能消耗较大，且要搭配 absolute 使用，
+      // dragable.style.transform = `translate(${x}px, ${y}px)`
+
+      
+      let nearestRange = nearest(event.clientX, event.clientY)
+      nearestRange.insertNode(dragable)
+      // console.log(range)
+    }
+    let up = (event) => {
+      baseX = baseX + event.clientX - startX;
+      baseY = baseY + event.clientY - startY;
+      document.removeEventListener("mousemove", move)
+      document.removeEventListener("mouseup", up)
+    }
+
+    document.addEventListener("mousemove", move)
+
+    document.addEventListener("mouseup", up)
+  })
+
+  // 建立文字 range 间隙矩阵
+  let ranges = []
+  let container = document.getElementById("container")
+  for (let i = 0; i < container.childNodes[0].textContent.length; i ++) {
+    let range = document.createRange();
+    range.setStart(container.childNodes[0], i)
+    range.setEnd(container.childNodes[0], i)
+    ranges.push(range)
+  }
+
+  // 拖进文字区域
+  function nearest(x0, y0) {
+    let nearestRange = null;
+    let distance = Infinity
+    for (let range of ranges) {
+      let {x, y} = range.getBoundingClientRect()
+      let d = (x0 - x) ** 2 + (y0 - y) ** 2;
+      if (d < distance) {
+        nearestRange = range;
+        distance = d;
+      }
+    }
+    return nearestRange
+  }
+
+  // 阻止选中事件
+  document.addEventListener("selectstart", event => event.preventDefault())
+</script>
+</html>
