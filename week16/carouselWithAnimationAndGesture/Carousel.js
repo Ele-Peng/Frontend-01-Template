@@ -7,6 +7,7 @@ export class Carousel {
       this.children = [];
       this.attributes = new Map();
       this.properties = new Map();
+      this.timeline = null;
     }
   
     setAttribute(name, value) { //attribute
@@ -21,8 +22,8 @@ export class Carousel {
     }
   
     render() {
-      let timeline = new Timeline;
-      timeline.start();
+      this.timeline = new Timeline;
+      this.timeline.start();
   
       let position = 0;
       let nextPicStopHandler = null;
@@ -36,7 +37,7 @@ export class Carousel {
         let offset = 0;
 
         let onStart = () => {
-            timeline.pause();
+          this.timeline.pause();
             clearTimeout(nextPicStopHandler);
             let currentElement = children[currentPosition];
 
@@ -73,8 +74,8 @@ export class Carousel {
                 direction = -1;
             }
 
-            timeLine.reset();
-            timeLine.start();
+            this.timeline.reset();
+            this.timeline.start();
 
             let lastElement = children[lastPosition];
             let currentElement = children[currentPosition];
@@ -98,9 +99,9 @@ export class Carousel {
             let currentAnimation = new Animation(currentElement.style, 'transform', currentTransformValue.start, currentTransformValue.end, 500, 0, ease, v=>`translateX(${v}px)`);
             let nextAnimation = new Animation(nextElement.style, 'transform', nextTransformValue.start, nextTransformValue.end, 500, 0, ease, v=>`translateX(${v}px)`);
             
-            timeLine.add(currentAnimation)
-            timeLine.add(nextAnimation)
-            timeLine.add(lastAnimation)
+            this.timeline.add(currentAnimation)
+            this.timeline.add(nextAnimation)
+            this.timeline.add(lastAnimation)
             
             position = (position - direction + this.data.length) % this.data.length;
 
@@ -109,6 +110,7 @@ export class Carousel {
         }
 
         let element = <img src={url} onStart={onStart} onPan={onPan} onPanend={onPanend} enableGesture={true}/>;
+        console.log('element', element)
         element.style.transform = "translateX(0px);"
         element.addEventListener("dragstart", event => event.preventDefault())
         return element
@@ -143,8 +145,8 @@ export class Carousel {
             v => `translateX(${5 * v}px)`
         )
 
-        timeline.add(currentAnimation);
-        timeline.add(nextAnimation);
+        this.timeline.add(currentAnimation);
+        this.timeline.add(nextAnimation);
   
         position = nextPosition;
         nextPicStopHandler = setTimeout(nextPic, 3000);

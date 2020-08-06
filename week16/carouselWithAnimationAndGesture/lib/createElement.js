@@ -75,5 +75,9 @@ export class Wrapper {
           child.mountTo(this.root);
       }
   }
+
+  get style() {
+    return this.root.style;
+  }
 }
 
