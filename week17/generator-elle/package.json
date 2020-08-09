@@ -1,0 +1,18 @@
+{
+  "name": "generator-elle",
+  "version": "1.0.0",
+  "description": "generator-elle made by yeoman",
+  "main": "./app/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "files": [
+    "app",
+    "router"
+  ],
+  "author": "Elle Peng",
+  "license": "ISC",
+  "dependencies": {
+    "yeoman-generator": "^4.11.0"
+  }
+}
