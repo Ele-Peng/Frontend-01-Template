@@ -1,0 +1,23 @@
+{
+  "name": "html-parser",
+  "version": "1.0.0",
+  "description": "test for html parser",
+  "main": "parser.js",
+  "scripts": {
+    "test": "mocha",
+    "coverage": "nyc mocha"
+  },
+  "author": "Elle-Peng",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.1",
+    "@babel/preset-env": "^7.11.0",
+    "@babel/register": "^7.10.5",
+    "@istanbuljs/nyc-config-babel": "^3.0.0",
+    "babel-loader": "^8.1.0",
+    "babel-plugin-istanbul": "^6.0.0",
+    "mocha": "^8.1.1",
+    "nyc": "^15.1.0"
+  }
+}
